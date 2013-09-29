@@ -1,4 +1,4 @@
-99LispProblems
+99 Lisp Problems
 ==============
 
 Trying to teach myself Lisp, one problem at a time.

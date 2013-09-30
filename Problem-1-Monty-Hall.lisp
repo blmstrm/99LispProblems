@@ -86,7 +86,7 @@
 
 (defun select-first-door ()
   "Contestant make his/her first selection of a door."
-  (elt *doors* (+ (random 2) 1))
+  (elt *doors* (random 3))
   )
 
 (defun host-opens-first-door ()

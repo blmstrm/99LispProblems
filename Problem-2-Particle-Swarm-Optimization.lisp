@@ -21,5 +21,29 @@
 ;;;   - Wikipedia
 
 (defpackage  #:particle-swarm-optimization
-  (use #:cl)
+  (:use #:cl)
   )
+
+(defstruct particle
+  "Particle struct initialized with random velocity and position"
+  (velocity (init-velocity 2.0 1.0))
+  (position (init-position 2.0 1.0))
+  )
+
+(defstruct swarm
+  "Swarm struct with initialized particles and a best-known-position set to zero"
+  (particles (make-list  100 :initial-element (make-particle)))
+  (best-known-position 0.0)
+  )
+
+(defun init-velocity(b_up b_lo)
+  "Return inital random velocity" 
+  (loop :repeat 10 :collect (+ (* 2 (random (abs (- b_up b_lo)))) (- (abs (- b_up b_lo )))))
+  
+  )
+
+(defun init-position(b_up b_lo)
+  "Init a uniformly distributed random vector"
+  (loop :repeat 10 :collect (random (/ 1 (- b_up b_lo))))
+  )
+

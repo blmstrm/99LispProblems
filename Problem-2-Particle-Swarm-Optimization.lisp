@@ -48,12 +48,14 @@
   )
   
 (defun update-particle-pos-vel (particle)
-  
   )
 
 (defun update-best-position (particle)
-  
-  
   )
+
+(defun calculate-velocity (velocity-dim position-dim best-known-pos best-known-pos-swarm)
+  (+ (* 0.1 velocity-dim) (* 0.2 0.3 (- best-known-pos position-dim)) (- best-known-pos-swarm position-dim))  
+  )
+
 
 

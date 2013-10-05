@@ -46,4 +46,14 @@
   "Init a uniformly distributed random vector"
   (loop :repeat 10 :collect (random (/ 1 (- b_up b_lo))))
   )
+  
+(defun update-particle-pos-vel (particle)
+  
+  )
+
+(defun update-best-position (particle)
+  
+  
+  )
+
 

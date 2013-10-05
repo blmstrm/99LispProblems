@@ -47,7 +47,8 @@
   (loop :repeat 10 :collect (random (/ 1 (- b_up b_lo))))
   )
   
-(defun update-particle-pos-vel (particle)
+(defun update-particle-pos-vel (p)
+  (mapcar #'+  (particle-position p) (particle-velocity p))
   )
 
 (defun update-best-position (particle)

@@ -24,39 +24,26 @@
   (:use #:cl)
   )
 
-(defstruct particle
-  "Particle struct initialized with random velocity and position"
-  (velocity (init-velocity 2.0 1.0))
-  (position (init-position 2.0 1.0))
-  )
 
-(defstruct swarm
-  "Swarm struct with initialized particles and a best-known-position set to zero"
-  (particles (make-list  100 :initial-element (make-particle)))
-  (best-known-position 0.0)
+(defun pso (b_lo b_up)
+  "Particle optimization algorithm which takes b_lo , solution space floor, and b_up, search space ceiling"
+  (let ((swarm (list (loop :repeat 100 :collect (particle b_lo b_up)) (empty-array))))
+    (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
+    )
   )
-
-(defun init-velocity(b_up b_lo)
-  "Return inital random velocity" 
-  (loop :repeat 10 :collect (+ (* 2 (random (abs (- b_up b_lo)))) (- (abs (- b_up b_lo )))))
   
+(defun particle (b_lo b_up)
+  (list (p-velocity b_lo b_up) (p-position b_lo b_up) (empty-array))
   )
 
-(defun init-position(b_up b_lo)
-  "Init a uniformly distributed random vector"
+(defun p-velocity (b_lo b_up)
+  (loop :repeat 10 :collect (+ (* 2 (random (abs (- b_up b_lo)))) (- (abs (- b_up b_lo )))))
+  )
+
+(defun p-position (b_lo b_up)
   (loop :repeat 10 :collect (random (/ 1 (- b_up b_lo))))
   )
-  
-(defun update-particle-pos-vel (p)
-  (mapcar #'+  (particle-position p) (particle-velocity p))
+
+(defun empty-array ()
+  (make-list 10 :initial-element 0.0) 
   )
-
-(defun update-best-position (particle)
-  )
-
-(defun calculate-velocity (velocity-dim position-dim best-known-pos best-known-pos-swarm)
-  (+ (* 0.1 velocity-dim) (* 0.2 0.3 (- best-known-pos position-dim)) (- best-known-pos-swarm position-dim))  
-  )
-
-
-

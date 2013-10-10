@@ -13,6 +13,7 @@
 ;;;     * For each dimension d= 1,...,n do:
 ;;;       * Update the particle's velocity: v_(i,d) <- stjärtw v_(i,d) + svansp_p * r_p * (p_(i,d)-x_(i,d)) + psvans_g*r_g*(g_d-x_(i,d)
 ;;;     * Update the particle's position: x_i <- x_i+v_i
+;;;     
 ;;;     * If (f(x_i) < f(p_i)) do:
 ;;;       * Update the particle's best known position: p_i <- x_i
 ;;;       * If (f(p_i) < (f(g)) update the swarm's best known position: g <- p_i
@@ -24,26 +25,38 @@
   (:use #:cl)
   )
 
-
 (defun pso (b_lo b_up)
   "Particle optimization algorithm which takes b_lo , solution space floor, and b_up, search space ceiling"
   (let ((swarm (list (loop :repeat 100 :collect (particle b_lo b_up)) (empty-array))))
+    (mapcar #'(lambda (p) 
+                           (mapcar #'(lambda (d) (print "calculate velocity")) (nth 0 p))
+                           (mapcar #'(lambda (d) (print "calculate position")) (nth 1 p))
+                ) (nth 0 swarm))
     (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
-    )
   )
-  
+)
+
 (defun particle (b_lo b_up)
+  "Return a new particle populated with position, velocity and best position"
   (list (p-velocity b_lo b_up) (p-position b_lo b_up) (empty-array))
   )
 
 (defun p-velocity (b_lo b_up)
+  "Generate particle velocity vector"
   (loop :repeat 10 :collect (+ (* 2 (random (abs (- b_up b_lo)))) (- (abs (- b_up b_lo )))))
   )
 
 (defun p-position (b_lo b_up)
+  "Generate particle position vector"
   (loop :repeat 10 :collect (random (/ 1 (- b_up b_lo))))
   )
 
 (defun empty-array ()
+  "Init empty array"
   (make-list 10 :initial-element 0.0) 
+  )
+
+(defun rf ()
+  "Return a cons with two random numbers"
+  (random 1.0)
   )

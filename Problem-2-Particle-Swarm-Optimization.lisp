@@ -29,12 +29,13 @@
   "Particle optimization algorithm which takes b_lo , solution space floor, and b_up, search space ceiling"
   (let ((swarm (list (loop :repeat 100 :collect (particle b_lo b_up)) (empty-array))))
     (mapcar #'(lambda (p) 
-                           (mapcar #'(lambda (d) (print "calculate velocity")) (nth 0 p))
-                           (mapcar #'(lambda (d) (print "calculate position")) (nth 1 p))
+                (mapcar #'(lambda (pa)()) (nth 0 p))
+                (mapcar #'(lambda (pa)()) (nth 1 p))
                 ) (nth 0 swarm))
     (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
+    )
   )
-)
+
 
 (defun particle (b_lo b_up)
   "Return a new particle populated with position, velocity and best position"

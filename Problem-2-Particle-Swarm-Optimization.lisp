@@ -26,16 +26,25 @@
   )
 
 (defun pso (b_lo b_up)
-  "Particle optimization algorithm which takes b_lo , solution space floor, and b_up, search space ceiling"
-  (let ((swarm (list (loop :repeat 100 :collect (particle b_lo b_up)) (empty-array))))
-    (mapcar #'(lambda (p) 
-                (mapcar #'(lambda (pa)()) (nth 0 p))
-                (mapcar #'(lambda (pa)()) (nth 1 p))
-                ) (nth 0 swarm))
-    (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
+  "Particle optimization algorithm which takes b_lo , search space floor, and b_up, search space ceiling"
+  (let ((swarm (list (loop :repeat 1 :collect (particle b_lo b_up)) (empty-array))))
+    (setf swarm (update-swarm swarm))
+    (format t "The optimized solution in the swarm is: ~a~&" (nth 0 swarm))
     )
   )
 
+(defun update-swarm (swarm)
+  "Returns updated swarm with moved particles and updated best particle"
+  (setf (nth 0 swarm) (mapcar #'(lambda (p) (move-particle p)) (nth 0 swarm)))
+  swarm
+  )
+
+(defun move-particle (p)
+  "Adjusts velocity and position for particle and compares new position to particles best known position"
+  (setf (nth 0 p) (mapcar #'(lambda (x) (+ 10 x))(nth 0 p)))
+  (setf (nth 1 p) (map 'list #'+ (nth 0 p) (nth 1 p)))
+  p  
+  )
 
 (defun particle (b_lo b_up)
   "Return a new particle populated with position, velocity and best position"
@@ -55,9 +64,4 @@
 (defun empty-array ()
   "Init empty array"
   (make-list 10 :initial-element 0.0) 
-  )
-
-(defun rf ()
-  "Return a cons with two random numbers"
-  (random 1.0)
   )

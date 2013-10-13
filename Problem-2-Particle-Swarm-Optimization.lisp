@@ -27,24 +27,28 @@
 
 (defun pso (b_lo b_up)
   "Particle optimization algorithm which takes b_lo , search space floor, and b_up, search space ceiling"
-  (let ((swarm (list (loop :repeat 1 :collect (particle b_lo b_up)) (empty-array))))
+  (let ((swarm (list (loop :repeat 100 :collect (particle b_lo b_up)) (empty-array))))
     (setf swarm (update-swarm swarm))
-    (format t "The optimized solution in the swarm is: ~a~&" (nth 0 swarm))
+    (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
     )
   )
 
 (defun update-swarm (swarm)
   "Returns updated swarm with moved particles and updated best particle"
-  (setf (nth 0 swarm) (mapcar #'(lambda (p) (move-particle p)) (nth 0 swarm)))
+  (setf (nth 0 swarm) (mapcar #'(lambda (p) (move-particle p (nth 1 swarm))) (nth 0 swarm)))
   swarm
   )
 
-(defun move-particle (p)
+(defun move-particle (p swarm-best)
   "Adjusts velocity and position for particle and compares new position to particles best known position"
-  (setf (nth 0 p) (mapcar #'(lambda (x) (+ 10 x))(nth 0 p)))
-  (setf (nth 1 p) (map 'list #'+ (nth 0 p) (nth 1 p)))
+  (let ((r_p  (random 1.0))
+        (r_g (random 1.0)))
+    (setf (nth 0 p) (mapcar #'(lambda (v x p g) (+ (* 0.1 v) (* 0.2 r_p (- p x)) (* 0.3 r_g (- g x)))) (nth 0 p) (nth 1 p) (nth 2 p) swarm-best))
+    (setf (nth 1 p) (map 'list #'+ (nth 0 p) (nth 1 p)))
+    )
   p  
   )
+
 
 (defun particle (b_lo b_up)
   "Return a new particle populated with position, velocity and best position"

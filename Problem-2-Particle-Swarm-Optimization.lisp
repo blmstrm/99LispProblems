@@ -25,11 +25,16 @@
   (:use #:cl)
   )
 
-(defun pso (b_lo b_up)
+(defun pso (b_lo b_up f)
   "Particle optimization algorithm which takes b_lo , search space floor, and b_up, search space ceiling"
-  (let ((swarm (list (loop :repeat 100 :collect (particle b_lo b_up)) (empty-array))))
-    (setf swarm (update-swarm swarm))
-    (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
+  (if (functionp f)
+    (let ((dimensions (length (sb-introspect:function-lambda-list f))))
+      (let ((swarm (list (loop :repeat 20 :collect (particle b_lo b_up dimensions)) (empty-array dimensions))))
+        (setf swarm (update-swarm swarm))
+        (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
+        )
+      )
+    (format t "The supplied symbol ~a is not a function.~&" f)
     )
   )
 
@@ -50,22 +55,22 @@
   )
 
 
-(defun particle (b_lo b_up)
+(defun particle (b_lo b_up dimensions)
   "Return a new particle populated with position, velocity and best position"
-  (list (p-velocity b_lo b_up) (p-position b_lo b_up) (empty-array))
+  (list (p-velocity b_lo b_up dimensions) (p-position b_lo b_up dimensions) (empty-array dimensions))
   )
 
-(defun p-velocity (b_lo b_up)
+(defun p-velocity (b_lo b_up dimensions)
   "Generate particle velocity vector"
-  (loop :repeat 10 :collect (+ (* 2 (random (abs (- b_up b_lo)))) (- (abs (- b_up b_lo )))))
+  (loop :repeat dimensions :collect (+ (* 2 (random (abs (- b_up b_lo)))) (- (abs (- b_up b_lo )))))
   )
 
-(defun p-position (b_lo b_up)
+(defun p-position (b_lo b_up dimensions)
   "Generate particle position vector"
-  (loop :repeat 10 :collect (random (/ 1 (- b_up b_lo))))
+  (loop :repeat dimensions :collect (random (/ 1 (- b_up b_lo))))
   )
 
-(defun empty-array ()
+(defun empty-array (dimensions)
   "Init empty array"
-  (make-list 10 :initial-element 0.0) 
+  (make-list dimensions :initial-element 0.0) 
   )

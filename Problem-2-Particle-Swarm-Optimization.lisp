@@ -29,14 +29,33 @@
   "Particle optimization algorithm which takes b_lo , search space floor, and b_up, search space ceiling"
   (if (functionp f)
     (let ((dimensions (length (sb-introspect:function-lambda-list f))))
-      (let ((swarm (list (loop :repeat 20 :collect (particle b_lo b_up dimensions)) (empty-array dimensions))))
+      (let ((swarm (list (loop :repeat 2 :collect (particle b_lo b_up dimensions)) (random-array dimensions))))
         (setf swarm (update-swarm swarm))
+        (setf (nth 0 swarm) (mapcar #'(lambda (p) (adjust-best-particle-pos p f)) (nth 0 swarm)))
+        (setf (nth 1 swarm) (adjust-best-swarm-pos (nth 0 swarm) swarm f))
         (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
         )
       )
     (format t "The supplied symbol ~a is not a function.~&" f)
     )
   )
+
+(defun adjust-best-particle-pos (p f)
+  "Compares particles current position and best-known position by applying f to both. Sets best known position to the lowest value."
+  (if (< (apply f (nth 1 p)) (apply f (nth 2 p))) (setf (nth 2 p) (nth 1 p)))
+  p  
+  ) 
+
+(defun adjust-best-swarm-pos (ps swarm f)
+  "Compare all particles best known positions to swarms best known position and overwrite if particle's in better position."
+  (let ((best (nth 1 swarm)))
+    (loop for p in ps
+          do (if (< (apply f (nth 2 p )) (apply f best)) (setf best (nth 2 p)))
+          )
+    best  
+    )
+ )
+
 
 (defun update-swarm (swarm)
   "Returns updated swarm with moved particles and updated best particle"
@@ -57,7 +76,7 @@
 
 (defun particle (b_lo b_up dimensions)
   "Return a new particle populated with position, velocity and best position"
-  (list (p-velocity b_lo b_up dimensions) (p-position b_lo b_up dimensions) (empty-array dimensions))
+  (list (p-velocity b_lo b_up dimensions) (p-position b_lo b_up dimensions) (random-array dimensions))
   )
 
 (defun p-velocity (b_lo b_up dimensions)
@@ -70,7 +89,7 @@
   (loop :repeat dimensions :collect (random (/ 1 (- b_up b_lo))))
   )
 
-(defun empty-array (dimensions)
+(defun random-array (dimensions)
   "Init empty array"
-  (make-list dimensions :initial-element 0.0) 
+  (make-list dimensions :initial-element (random 1.0))
   )

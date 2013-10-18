@@ -15,8 +15,7 @@
 ;;;     * Update the particle's position: x_i <- x_i+v_i
 ;;;     
 ;;;     * If (f(x_i) < f(p_i)) do:
-;;;       * Update the particle's best known position: p_i <- x_i
-;;;       * If (f(p_i) < (f(g)) update the swarm's best known position: g <- p_i
+;;;       * Update the particle's best known position: p_i <- x_i;;;       * If (f(p_i) < (f(g)) update the swarm's best known position: g <- p_i
 ;;;   * Now g holds the best found solution.
 ;;;   
 ;;;   - Wikipedia
@@ -30,7 +29,7 @@
   (if (functionp f)
     (let ((dimensions (length (sb-introspect:function-lambda-list f))))
       (let ((swarm (list (loop :repeat 40 :collect (particle b_lo b_up dimensions)) (random-array dimensions))))
-       (dotimes (i 100) (swarm-step f swarm))
+       (dotimes (i 40) (swarm-step f swarm))
         (format t "The optimized solution in the swarm is: ~a~&" (nth 1 swarm))
         )
       )
